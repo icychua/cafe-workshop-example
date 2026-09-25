@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Café Bill Calculator</title>
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f4f4;
+      margin: 0;
+      padding: 40px 20px;
+      color: #222;
+    }
+
+    .calculator {
+      max-width: 600px;
+      margin: 0 auto;
+      background-color: white;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+
+    h1 {
+      text-align: center;
+      margin-top: 0;
+    }
+
+    .menu-item {
+      display: grid;
+      grid-template-columns: 1fr 100px 80px;
+      align-items: center;
+      gap: 15px;
+      padding: 14px 0;
+      border-bottom: 1px solid #ddd;
+    }
+
+    .item-name {
+      font-weight: bold;
+    }
+
+    .price {
+      text-align: right;
+    }
+
+    input[type="number"] {
+      width: 60px;
+      padding: 8px;
+      font-size: 16px;
+      text-align: center;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+    }
+
+    button {
+      width: 100%;
+      margin-top: 25px;
+      padding: 14px;
+      font-size: 16px;
+      font-weight: bold;
+      background-color: #222;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #444;
+    }
+
+    .total {
+      margin-top: 25px;
+      padding: 20px;
+      background-color: #f0f0f0;
+      border-radius: 8px;
+      text-align: center;
+    }
+
+    .total-label {
+      font-size: 16px;
+      margin-bottom: 5px;
+    }
+
+    #totalAmount {
+      font-size: 32px;
+      font-weight: bold;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="calculator">
+
+    <h1>Café Bill Calculator</h1>
+
+    <div class="menu-item">
+      <div class="item-name">Chicken Rice</div>
+      <div class="price">$4.50</div>
+      <input type="number" id="chickenRice" min="0" value="0">
+    </div>
+
+    <div class="menu-item">
+      <div class="item-name">Nasi Lemak</div>
+      <div class="price">$4.00</div>
+      <input type="number" id="nasiLemak" min="0" value="0">
+    </div>
+
+    <div class="menu-item">
+      <div class="item-name">Laksa</div>
+      <div class="price">$5.00</div>
+      <input type="number" id="laksa" min="0" value="0">
+    </div>
+
+    <div class="menu-item">
+      <div class="item-name">Kopi</div>
+      <div class="price">$1.50</div>
+      <input type="number" id="kopi" min="0" value="0">
+    </div>
+
+    <div class="menu-item">
+      <div class="item-name">Teh</div>
+      <div class="price">$1.30</div>
+      <input type="number" id="teh" min="0" value="0">
+    </div>
+
+    <div class="menu-item">
+      <div class="item-name">Milo</div>
+      <div class="price">$2.00</div>
+      <input type="number" id="milo" min="0" value="0">
+    </div>
+
+    <button onclick="calculateBill()">Calculate Bill</button>
+
+    <div class="total">
+      <div class="total-label">Total Bill</div>
+      <div id="totalAmount">$0.00</div>
+    </div>
+
+  </div>
+
+  <script>
+    function calculateBill() {
+
+      const chickenRiceQty =
+        Number(document.getElementById("chickenRice").value) || 0;
+
+      const nasiLemakQty =
+        Number(document.getElementById("nasiLemak").value) || 0;
+
+      const laksaQty =
+        Number(document.getElementById("laksa").value) || 0;
+
+      const kopiQty =
+        Number(document.getElementById("kopi").value) || 0;
+
+      const tehQty =
+        Number(document.getElementById("teh").value) || 0;
+
+      const miloQty =
+        Number(document.getElementById("milo").value) || 0;
+
+
+      const total =
+        (chickenRiceQty * 4.50) +
+        (nasiLemakQty * 4.00) +
+        (laksaQty * 5.00) +
+        (kopiQty * 1.50) +
+        (tehQty * 1.30) +
+        (miloQty * 2.00);
+
+
+      document.getElementById("totalAmount").textContent =
+        "$" + total.toFixed(2);
+    }
+  </script>
+
+</body>
+</html>
