@@ -88,6 +88,12 @@
       font-size: 32px;
       font-weight: bold;
     }
+
+    #status {
+      text-align: center;
+      color: #666;
+      padding: 20px;
+    }
   </style>
 </head>
 
@@ -97,43 +103,13 @@
 
     <h1>Café Bill Calculator</h1>
 
-    <div class="menu-item">
-      <div class="item-name">Chicken Rice</div>
-      <div class="price">$4.50</div>
-      <input type="number" id="chickenRice" min="0" value="0">
-    </div>
+    <div id="status">Loading menu...</div>
 
-    <div class="menu-item">
-      <div class="item-name">Nasi Lemak</div>
-      <div class="price">$4.00</div>
-      <input type="number" id="nasiLemak" min="0" value="0">
-    </div>
+    <div id="menu"></div>
 
-    <div class="menu-item">
-      <div class="item-name">Laksa</div>
-      <div class="price">$5.00</div>
-      <input type="number" id="laksa" min="0" value="0">
-    </div>
-
-    <div class="menu-item">
-      <div class="item-name">Kopi</div>
-      <div class="price">$1.50</div>
-      <input type="number" id="kopi" min="0" value="0">
-    </div>
-
-    <div class="menu-item">
-      <div class="item-name">Teh</div>
-      <div class="price">$1.30</div>
-      <input type="number" id="teh" min="0" value="0">
-    </div>
-
-    <div class="menu-item">
-      <div class="item-name">Milo</div>
-      <div class="price">$2.00</div>
-      <input type="number" id="milo" min="0" value="0">
-    </div>
-
-    <button onclick="calculateBill()">Calculate Bill</button>
+    <button id="calculateButton" onclick="calculateBill()" disabled>
+      Calculate Bill
+    </button>
 
     <div class="total">
       <div class="total-label">Total Bill</div>
@@ -143,39 +119,82 @@
   </div>
 
   <script>
+    let menuItems = [];
+
+    async function loadMenu() {
+      try {
+        const response = await fetch("menu.csv");
+
+        if (!response.ok) {
+          throw new Error("Could not load menu.csv");
+        }
+
+        const csvText = await response.text();
+
+        const lines = csvText
+          .trim()
+          .split(/\r?\n/);
+
+        menuItems = lines.map(function(line) {
+          const parts = line.split(",");
+
+          return {
+            name: parts[0].trim(),
+            price: parseFloat(parts[1].trim())
+          };
+        });
+
+        displayMenu();
+
+      } catch (error) {
+        document.getElementById("status").textContent =
+          "Unable to load menu.csv.";
+        console.error(error);
+      }
+    }
+
+    function displayMenu() {
+      const menu = document.getElementById("menu");
+
+      menu.innerHTML = "";
+
+      menuItems.forEach(function(item, index) {
+        const row = document.createElement("div");
+        row.className = "menu-item";
+
+        row.innerHTML = `
+          <div class="item-name">${item.name}</div>
+          <div class="price">$${item.price.toFixed(2)}</div>
+          <input
+            type="number"
+            id="quantity-${index}"
+            min="0"
+            value="0"
+          >
+        `;
+
+        menu.appendChild(row);
+      });
+
+      document.getElementById("status").style.display = "none";
+      document.getElementById("calculateButton").disabled = false;
+    }
+
     function calculateBill() {
+      let total = 0;
 
-      const chickenRiceQty =
-        Number(document.getElementById("chickenRice").value) || 0;
+      menuItems.forEach(function(item, index) {
+        const quantity =
+          Number(document.getElementById("quantity-" + index).value) || 0;
 
-      const nasiLemakQty =
-        Number(document.getElementById("nasiLemak").value) || 0;
-
-      const laksaQty =
-        Number(document.getElementById("laksa").value) || 0;
-
-      const kopiQty =
-        Number(document.getElementById("kopi").value) || 0;
-
-      const tehQty =
-        Number(document.getElementById("teh").value) || 0;
-
-      const miloQty =
-        Number(document.getElementById("milo").value) || 0;
-
-
-      const total =
-        (chickenRiceQty * 4.50) +
-        (nasiLemakQty * 4.00) +
-        (laksaQty * 5.00) +
-        (kopiQty * 1.50) +
-        (tehQty * 1.30) +
-        (miloQty * 2.00);
-
+        total += item.price * quantity;
+      });
 
       document.getElementById("totalAmount").textContent =
         "$" + total.toFixed(2);
     }
+
+    loadMenu();
   </script>
 
 </body>
